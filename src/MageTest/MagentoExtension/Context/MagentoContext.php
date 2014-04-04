@@ -30,8 +30,10 @@ use MageTest\MagentoExtension\Service\ConfigManager,
     MageTest\MagentoExtension\Fixture\FixtureFactory,
     MageTest\MagentoExtension\Service\Session;
 
-use Behat\MinkExtension\Context\RawMinkContext,
-    Behat\Gherkin\Node\TableNode;
+use Behat\Gherkin\Node\TableNode;
+
+use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
+
 
 /**
  * MagentoContext
@@ -42,7 +44,7 @@ use Behat\MinkExtension\Context\RawMinkContext,
  *
  * @author     MageTest team (https://github.com/MageTest/BehatMage/contributors)
  */
-class MagentoContext extends RawMinkContext implements MagentoAwareInterface, Context
+class MagentoContext extends PageObjectContext implements MagentoAwareInterface, Context
 {
     /**
      * @var MageApp
@@ -83,6 +85,21 @@ class MagentoContext extends RawMinkContext implements MagentoAwareInterface, Co
         } else {
             throw new \InvalidArgumentException('$uri parameter should start with a valid admin route and contain controller and action elements');
         }
+    }
+
+    /**
+     * @Given /^I am logged in as an admin$/
+     */
+    public function iLoginAsAdminWith()
+    {
+        $this->getPage('Admin')->open();
+
+        // check if already logged in as admin
+        if ($this->getPage('Admin Dashboard')->isOpen()) {
+            return;
+        }
+
+        $this->getPage('Admin')->login('admin', '123123pass');
     }
 
     /**
