@@ -72,22 +72,6 @@ class MagentoContext extends PageObjectContext implements MagentoAwareInterface,
     private $sessionService;
 
     /**
-     * @When I open admin URI :uri
-     */
-    public function iOpenAdminUri($uri)
-    {
-        $urlModel = new \Mage_Adminhtml_Model_Url();
-        $m = explode('/', ltrim($uri, '/'));
-        // Check if frontName matches a configured admin route
-        if ($this->app->getFrontController()->getRouter('admin')->getRouteByFrontName($m[0])) {
-            $processedUri = "/{$m[0]}/{$m[1]}/{$m[2]}/key/".$urlModel->getSecretKey($m[0], $m[1])."/{$m[2]}";
-            $this->getSession()->visit($processedUri);
-        } else {
-            throw new \InvalidArgumentException('$uri parameter should start with a valid admin route and contain controller and action elements');
-        }
-    }
-
-    /**
      * @Given /^I am logged in as an admin$/
      */
     public function iLoginAsAdminWith()
@@ -99,17 +83,27 @@ class MagentoContext extends PageObjectContext implements MagentoAwareInterface,
             return;
         }
 
-        $this->getPage('Admin')->login('admin', '123123pass');
+        $this->getPage('Admin')->login('admin', 'jamesc525');
     }
 
     /**
-     * @When I am logged in as admin user :username identified by :password
-     * @When I log in as admin user :username identified by :password
+     * @When I open admin URI :arg1
      */
-    public function iLoginAsAdmin($username, $password)
+    public function iOpenAdminUri($arg1)
     {
-        $sid = $this->sessionService->adminLogin($username, $password);
-        $this->getSession()->setCookie('adminhtml', $sid);
+        $this->getPage('AdminDashboard')->open();
+    }
+
+    /**
+     * @Then I should see text :arg1
+     */
+    public function iShouldSeeText($arg1)
+    {
+        if ($this->getPage('AdminDashboard')->hasTitle($arg1)) {
+            return;
+        } else {
+            return false;
+        }
     }
 
     /**

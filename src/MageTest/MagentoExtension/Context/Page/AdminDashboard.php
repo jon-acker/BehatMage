@@ -15,4 +15,12 @@ class AdminDashboard extends Page
     {
         return strrpos($this->getSession()->getCurrentUrl(), $this->path) > -1 ;
     }
+
+    public function hasTitle($tile)
+    {
+        $page = $this->getSession()->getPage();
+
+        $title = $page->find('css', '.head-dashboard');
+        expect($title)->toBe($title);
+    }
 }
