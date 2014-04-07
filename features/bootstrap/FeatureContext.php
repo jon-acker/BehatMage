@@ -25,6 +25,7 @@ use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
 
 use MageTest\MagentoExtension\Context\MagentoContext;
+use Bossa\PhpSpec\Expect\Wrapper;
 
 /**
  * Features context.
@@ -83,5 +84,21 @@ class FeatureContext extends MagentoContext implements SnippetAcceptingContext
     public function theAfterHookWillCleanUpAndConfigurationAndFixtures()
     {
         throw new PendingException();
+    }
+
+    /**
+     * @Then I should be on the dashboard page
+     */
+    public function iShouldBeOnTheDashboardPage()
+    {
+        expect($this->getPage('Admin Dashboard'))->toBeOpen();
+    }
+
+    /**
+     * @Then I should be on the process list page
+     */
+    public function iShouldBeOnTheProcessListPage()
+    {
+        expect($this->getPage('Admin Process List'))->toBeOpen();
     }
 }

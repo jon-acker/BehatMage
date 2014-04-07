@@ -32,6 +32,7 @@ use MageTest\MagentoExtension\Service\ConfigManager,
 
 use Behat\Gherkin\Node\TableNode;
 
+use SensioLabs\Behat\PageObjectExtension\Context\PageFactoryInterface;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 
 
@@ -74,7 +75,7 @@ class MagentoContext extends PageObjectContext implements MagentoAwareInterface,
     /**
      * @Given /^I am logged in as an admin$/
      */
-    public function iLoginAsAdminWith()
+    public function iLoginAsAdminUsingWebForm()
     {
         $this->getPage('Admin')->open();
 
@@ -87,23 +88,22 @@ class MagentoContext extends PageObjectContext implements MagentoAwareInterface,
     }
 
     /**
-     * @When I open admin URI :arg1
+     * @When I open admin URI :uri
      */
-    public function iOpenAdminUri($arg1)
+    public function iOpenAdminUri($uri)
     {
-        $this->getPage('AdminDashboard')->open();
+        $this->getPage('Admin')->open($uri);
     }
 
     /**
-     * @Then I should see text :arg1
+     * @When /^I am logged in as admin user "([^"]*)" identified by "([^"]*)"$/
+     * @When /^I log in as admin user "([^"]*)" identified by "([^"]*)"$/
      */
-    public function iShouldSeeText($arg1)
+    public function iLoginAsAdmin($username, $password)
     {
-        if ($this->getPage('AdminDashboard')->hasTitle($arg1)) {
-            return;
-        } else {
-            return false;
-        }
+        $sid = $this->sessionService->adminLogin($username, $password);
+
+        $this->getPage('Admin')->getSession()->setCookie('adminhtml', $sid);
     }
 
     /**
@@ -113,7 +113,8 @@ class MagentoContext extends PageObjectContext implements MagentoAwareInterface,
     public function iLogInAsCustomerWithPassword($email, $password)
     {
         $sid = $this->sessionService->customerLogin($email, $password);
-        $this->getSession()->setCookie('frontend', $sid);
+
+        $this->getPage('Admin')->getSession()->setCookie('frontend', $sid);
     }
 
     /**

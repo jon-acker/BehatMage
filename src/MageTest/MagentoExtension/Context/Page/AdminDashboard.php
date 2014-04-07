@@ -1,26 +1,27 @@
 <?php
 namespace MageTest\MagentoExtension\Context\Page;
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use MageTest\MagentoExtension\PageObject\MagentoPage;
 
-
-class AdminDashboard extends Page
+class AdminDashboard extends MagentoPage
 {
-    protected $path = '/admin/dashboard';
+    private $basePath = '/admin/dashboard';
+
+    protected $path = '/admin/dashboard/index/key/{secret}';
 
     /**
     * @return bool
     */
     public function isOpen()
     {
-        return strrpos($this->getSession()->getCurrentUrl(), $this->path) > -1 ;
+        return strrpos($this->getSession()->getCurrentUrl(), $this->basePath) > -1 ;
     }
 
-    public function hasTitle($tile)
+    public function hasTitle($title)
     {
         $page = $this->getSession()->getPage();
 
         $title = $page->find('css', '.head-dashboard');
-        expect($title)->toBe($title);
     }
+
 }

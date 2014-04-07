@@ -1,11 +1,11 @@
 <?php
 namespace MageTest\MagentoExtension\Context\Page;
 
-use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
+use MageTest\MagentoExtension\PageObject\MagentoPage;
 
-class Admin extends Page
+class Admin extends MagentoPage
 {
-    protected $path = '/admin';
+    protected $path = '/admin/{uri}';
 
     /**
      * @param string $username
